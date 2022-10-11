@@ -6,7 +6,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
 
-    id("com.github.jakemarsden.git-hooks")
     id("com.github.johnrengelman.shadow")
     id("io.gitlab.arturbosch.detekt")
 }
@@ -46,12 +45,6 @@ dependencies {
 application {
     // This is deprecated, but the Shadow plugin requires it
     mainClassName = "utilbot.AppKt"
-}
-
-gitHooks {
-    setHooks(
-        mapOf("pre-commit" to "detekt")
-    )
 }
 
 tasks.withType<KotlinCompile> {
