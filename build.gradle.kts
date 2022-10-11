@@ -17,15 +17,11 @@ repositories {
     google()
     mavenCentral()
 
-    maven {
-        name = "Sonatype Snapshots"
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
 
-    maven {
-        name = "Kotlin Discord"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
-    }
+    maven { url = uri("https://maven.kotlindiscord.com/repository/maven-public/") }
+
+    maven { url = uri("https://maven.fabricmc.net/") }
 }
 
 dependencies {
@@ -66,6 +62,10 @@ java {
     // Current LTS version of Java
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.shadowJar {
+    minimize()
 }
 
 detekt {
