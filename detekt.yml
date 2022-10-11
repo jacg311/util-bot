@@ -1,5 +1,3 @@
-# TODO: Update `rootPackage` in naming -> InvalidPackageDeclaration
-
 build:
   maxIssues: 0
   excludeCorrectable: false
@@ -242,7 +240,7 @@ formatting:
     active: true
     autoCorrect: true
   CommentSpacing:
-    active: true
+    active: false
     autoCorrect: true
   EnumEntryNameCase:
     active: true
@@ -394,8 +392,7 @@ naming:
 
   InvalidPackageDeclaration:
     active: true
-    # TODO: Update this with your project's base package
-    rootPackage: 'template'
+    rootPackage: 'util_bot'
 
   MatchingDeclarationName:
     active: true
@@ -480,7 +477,7 @@ potential-bugs:
   LateinitUsage:
     active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
-    excludeAnnotatedProperties: []
+    ignoreAnnotated: []
     ignoreOnClassesPattern: ''
   MapGetWithNotNullAssertionOperator:
     active: true
@@ -551,7 +548,7 @@ style:
     active: true
     ignoreOverridableFunction: true
     excludedFunctions: 'describeContents'
-    excludeAnnotatedFunction: ['dagger.Provides']
+    ignoreAnnotated: ['dagger.Provides']
   LibraryCodeMustSpecifyReturnType:
     active: true
   LibraryEntitiesShouldNotBePublic:
@@ -560,7 +557,7 @@ style:
     active: true
     maxJumpCount: 3
   MagicNumber:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
@@ -626,10 +623,10 @@ style:
     active: true
   UnderscoresInNumericLiterals:
     active: true
-    acceptableDecimalLength: 5
+    acceptableLength: 5
   UnnecessaryAbstractClass:
     active: true
-    excludeAnnotatedClasses: ['dagger.Module']
+    ignoreAnnotated: ['dagger.Module']
   UnnecessaryAnnotationUseSiteTarget:
     active: true
   UnnecessaryApply:
@@ -657,7 +654,7 @@ style:
     active: true
   UseDataClass:
     active: true
-    excludeAnnotatedClasses: []
+    ignoreAnnotated: []
     allowVars: false
   UseEmptyCounterpart:
     active: true
