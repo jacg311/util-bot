@@ -67,6 +67,14 @@ class UtilCommands : Extension() {
                                 url = embedData.thumbnail
                             }
                         }
+
+                        for (field in embedData.fields) {
+                            field {
+                                inline = field.inline
+                                name = field.name
+                                value = field.value
+                            }
+                        }
                     }
                 }
             }
@@ -94,5 +102,12 @@ class UtilCommands : Extension() {
         val image: String? = null
         val thumbnail: String? = null
         val color: Int = 0x202225
+        val fields: List<EmbedField> = mutableListOf()
+    }
+
+    class EmbedField {
+        val inline = false
+        val name = "\u200E" // Zero Width String
+        val value = "\u200E"
     }
 }
