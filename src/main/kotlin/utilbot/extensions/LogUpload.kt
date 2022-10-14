@@ -19,8 +19,8 @@ import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import utilbot.Util.MCLOGS_BASE_URL
-import utilbot.Util.client
+import utilbot.util.Util.MCLOGS_BASE_URL
+import utilbot.util.Util.client
 
 class LogUpload : Extension() {
     override val name = "log_upload"

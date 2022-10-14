@@ -9,9 +9,11 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.create.embed
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import utilbot.util.EmbedData
 import java.nio.file.Files
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.readText
@@ -20,7 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class UtilCommands : Extension() {
     override val name = "util"
 
-    val tags = HashMap<String, String>()
+    val tags = HashMap<String, EmbedData>()
 
     override suspend fun setup() {
         ephemeralSlashCommand {
@@ -49,7 +51,25 @@ class UtilCommands : Extension() {
 
             action {
                 respond {
-                    content = tags[arguments.tag]
+                    embed {
+                        val embedData = tags[arguments.tag]
+
+                        if (embedData == null) {
+                            description = "Couldnt find the tag ${arguments.tag}"
+                            return@action
+                        }
+
+                        title = embedData.title
+                        description = embedData.description
+                        image = embedData.image
+                        color = embedData.color
+
+                        if (embedData.thumbnail != null) {
+                            thumbnail {
+                                url = embedData.thumbnail
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -60,11 +80,16 @@ class UtilCommands : Extension() {
             name = "tag"
             description = "The tag to show"
 
+            val json = Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            }
+
             for (file in Files.list(Path(env("TAG_FOLDER")))) {
                 val fileName = file.nameWithoutExtension
                 val name = fileName.lowercase(Locale.ROOT).replace(" ", "_")
                 choices[fileName] = name
-                tags[name] = file.readText()
+                tags[name] = json.decodeFromString(file.readText())
             }
         }
     }

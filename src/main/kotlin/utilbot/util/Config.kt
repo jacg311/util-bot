@@ -1,4 +1,4 @@
-package utilbot
+package utilbot.util
 
 import dev.kord.common.entity.Snowflake
 

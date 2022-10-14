@@ -64,10 +64,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.shadowJar {
-    minimize()
-}
-
 detekt {
     buildUponDefaultConfig = true
     config = rootProject.files("detekt.yml")

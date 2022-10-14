@@ -1,7 +1,7 @@
-package utilbot
+package utilbot.util
 
 import com.kotlindiscord.kord.extensions.utils.env
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import mu.KotlinLogging
 
 object Util {
