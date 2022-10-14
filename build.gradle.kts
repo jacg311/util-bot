@@ -58,6 +58,12 @@ tasks.jar {
     }
 }
 
+tasks.shadowJar {
+    minimize {
+        exclude(dependency("ch.qos.logback:logback-classic"))
+    }
+}
+
 java {
     // Current LTS version of Java
     sourceCompatibility = JavaVersion.VERSION_11
