@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.jansi)
     implementation(libs.logback)
     implementation(libs.logging)
+    implementation(libs.jankson)
 }
 
 application {

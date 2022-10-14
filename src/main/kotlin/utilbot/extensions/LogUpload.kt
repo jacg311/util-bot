@@ -16,15 +16,12 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import utilbot.util.Util.JANKSON
 import utilbot.util.Util.MCLOGS_BASE_URL
 import utilbot.util.Util.client
 
 class LogUpload : Extension() {
     override val name = "log_upload"
-    private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
@@ -113,7 +110,7 @@ class LogUpload : Extension() {
     }
 
     private suspend fun upload(log: String): LogData {
-        return json.decodeFromString(
+        return JANKSON.fromJson(
             client.post("$MCLOGS_BASE_URL/1/log") {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
@@ -123,10 +120,14 @@ class LogUpload : Extension() {
                         }
                     )
                 )
-            }.readBytes().decodeToString()
+            }.readBytes().decodeToString(),
+            LogData::class.java
         )
     }
 
-    @Serializable
-    data class LogData(val success: Boolean, val url: String? = null, val error: String? = null)
+    class LogData {
+        val success: Boolean = false
+        val url: String? = null
+        val error: String? = null
+    }
 }
