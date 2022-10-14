@@ -38,7 +38,6 @@ class LogUpload : Extension() {
                 val logs = uploadLogFiles(attachments)
 
                 reply.edit {
-
                     if (logs.isEmpty()) {
                         content = "Failed to upload!"
                         return@edit
@@ -76,7 +75,6 @@ class LogUpload : Extension() {
                 val logs = uploadLogFiles(attachments)
 
                 reply.edit {
-
                     if (logs.isEmpty()) {
                         content = "Failed to upload!"
                         return@edit
@@ -99,9 +97,9 @@ class LogUpload : Extension() {
     }
 
     private fun isValidLog(attachment: Attachment, allowedExtensions: List<String>? = null): Boolean {
-        return attachment.size < 10_000_000
-                && attachment.contentType?.contains("text/plain") != false
-                && (allowedExtensions == null || allowedExtensions.any { attachment.filename.endsWith(it) })
+        return attachment.size < 10_000_000 &&
+                attachment.contentType?.contains("text/plain") != false &&
+                (allowedExtensions == null || allowedExtensions.any { attachment.filename.endsWith(it) })
     }
 
     private suspend fun uploadLogFiles(attachments: List<Attachment>): List<Pair<String, LogData>> {
