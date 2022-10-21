@@ -16,9 +16,12 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import utilbot.util.Constants.MCLOGS_BASE_URL
+import utilbot.util.Util
 import utilbot.util.Util.JANKSON
-import utilbot.util.Util.MCLOGS_BASE_URL
 import utilbot.util.Util.client
+import java.io.ByteArrayInputStream
+import java.util.zip.GZIPInputStream
 
 class LogUpload : Extension() {
     override val name = "log_upload"
@@ -27,7 +30,7 @@ class LogUpload : Extension() {
         event<MessageCreateEvent> {
             action {
                 val attachments = event.message.attachments
-                    .filter { isValidLog(it, listOf(".log", "server.txt", "client.txt")) }
+                    .filter { isValidLog(it, Util.CONFIG.logFileExtensions) }
 
                 if (attachments.isEmpty()) return@action
 
@@ -95,13 +98,18 @@ class LogUpload : Extension() {
 
     private fun isValidLog(attachment: Attachment, allowedExtensions: List<String>? = null): Boolean {
         return attachment.size < 10_000_000 &&
-                attachment.contentType?.contains("text/plain") != false &&
                 (allowedExtensions == null || allowedExtensions.any { attachment.filename.endsWith(it) })
     }
 
     private suspend fun uploadLogFiles(attachments: List<Attachment>): List<Pair<String, LogData>> {
-        val responses = attachments.map {
-            it.filename to it.download().decodeToString()
+        val responses = attachments.map { attachment ->
+            if (attachment.filename.endsWith(".gz")) {
+                val bais = ByteArrayInputStream(attachment.download())
+                val gzipStream = GZIPInputStream(bais).bufferedReader()
+                attachment.filename to gzipStream.readText()
+            } else {
+                attachment.filename to attachment.download().decodeToString()
+            }
         }.map {
             it.first to upload(it.second)
         }

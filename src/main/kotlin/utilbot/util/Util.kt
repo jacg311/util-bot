@@ -12,8 +12,6 @@ object Util {
     val CONFIG = Config()
 
     val client = HttpClient()
-    const val LINKIE_BASE_URL = "linkieapi.shedaniel.me"
-    const val MCLOGS_BASE_URL = "https://api.mclo.gs"
 
     val JANKSON: Jankson = Jankson.builder().build()
 }
