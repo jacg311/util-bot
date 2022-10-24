@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "util-bot"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     google()
@@ -57,13 +57,6 @@ tasks.jar {
     }
 }
 
-// configure shadow to not include unused modules to make the final jar smaller
-// exclude logback-classic from being removed as it crashes otherwise
-tasks.shadowJar {
-    minimize {
-        exclude(dependency("ch.qos.logback:logback-classic"))
-    }
-}
 
 java {
     // Current LTS version of Java
