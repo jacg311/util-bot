@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.logback)
     implementation(libs.logging)
     implementation(libs.jankson)
-    //implementation(libs.mapping.io)
+    implementation(libs.mapping.io)
 }
 
 application {

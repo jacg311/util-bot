@@ -20,7 +20,7 @@ jobs:
           java-version: 1.11
 
       - name: Gradle (Build)
-        run: sh gradlew build
+        run: sh gradlew build --stacktrace
 
       - name: Upload artifacts (Main JAR)
         uses: actions/upload-artifact@v2

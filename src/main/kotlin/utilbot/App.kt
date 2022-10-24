@@ -1,7 +1,10 @@
 package utilbot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import utilbot.extensions.*
+import utilbot.extensions.LogUpload
+import utilbot.extensions.PingCommand
+import utilbot.extensions.TagCommand
+import utilbot.extensions.VersionCommand
 import utilbot.util.Util
 
 suspend fun main() {
@@ -13,7 +16,7 @@ suspend fun main() {
             add(::VersionCommand)
             add(::TagCommand)
             add(::PingCommand)
-            add(::MappingCommand)
+            //add(::MappingCommand)
             add(::LogUpload)
         }
     }
