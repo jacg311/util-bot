@@ -11,16 +11,14 @@ plugins {
 }
 
 group = "util-bot"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     google()
     mavenCentral()
 
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-
     maven { url = uri("https://maven.kotlindiscord.com/repository/maven-public/") }
-
     maven { url = uri("https://maven.fabricmc.net/") }
 }
 
@@ -31,12 +29,12 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kx.ser)
 
-    // Logging dependencies
     implementation(libs.groovy)
     implementation(libs.jansi)
     implementation(libs.logback)
     implementation(libs.logging)
     implementation(libs.jankson)
+    //implementation(libs.mapping.io)
 }
 
 application {
@@ -59,6 +57,8 @@ tasks.jar {
     }
 }
 
+// configure shadow to not include unused modules to make the final jar smaller
+// exclude logback-classic from being removed as it crashes otherwise
 tasks.shadowJar {
     minimize {
         exclude(dependency("ch.qos.logback:logback-classic"))

@@ -16,6 +16,8 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import utilbot.util.Constants.MCLOGS_BASE_URL
 import utilbot.util.Util
 import utilbot.util.Util.JANKSON
@@ -47,9 +49,9 @@ class LogUpload : Extension() {
 
                     actionRow {
                         for (response in logs) {
-                            response.second.url?.let {
+                            response.value.url?.let {
                                 linkButton(it) {
-                                    label = response.first
+                                    label = response.key
                                 }
                             }
                         }
@@ -84,9 +86,9 @@ class LogUpload : Extension() {
 
                     actionRow {
                         for (response in logs) {
-                            response.second.url?.let {
+                            response.value.url?.let {
                                 linkButton(it) {
-                                    label = response.first
+                                    label = response.key
                                 }
                             }
                         }
@@ -101,20 +103,19 @@ class LogUpload : Extension() {
                 (allowedExtensions == null || allowedExtensions.any { attachment.filename.endsWith(it) })
     }
 
-    private suspend fun uploadLogFiles(attachments: List<Attachment>): List<Pair<String, LogData>> {
-        val responses = attachments.map { attachment ->
-            if (attachment.filename.endsWith(".gz")) {
+    private suspend fun uploadLogFiles(attachments: List<Attachment>): Map<String, LogData> {
+        val responses = HashMap<String, LogData>()
+        for (attachment in attachments) {
+            val text = if (attachment.filename.endsWith(".gz")) {
                 val bais = ByteArrayInputStream(attachment.download())
-                val gzipStream = GZIPInputStream(bais).bufferedReader()
-                attachment.filename to gzipStream.readText()
-            } else {
-                attachment.filename to attachment.download().decodeToString()
-            }
-        }.map {
-            it.first to upload(it.second)
-        }
+                withContext(Dispatchers.IO) {
+                    GZIPInputStream(bais).bufferedReader()
+                }.readText()
+            } else attachment.download().decodeToString()
 
-        return responses.filter { it.second.success }
+            responses[attachment.filename] = upload(text)
+        }
+        return responses.filter { it.value.success }
     }
 
     private suspend fun upload(log: String): LogData {

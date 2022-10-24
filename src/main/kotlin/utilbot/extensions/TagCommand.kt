@@ -1,48 +1,30 @@
 package utilbot.extensions
 
+import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.stringChoice
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.Color
+import dev.kord.common.entity.Permission
 import dev.kord.rest.builder.message.create.embed
-import utilbot.util.Util.JANKSON
+import utilbot.util.Util
 import java.nio.file.Files
 import java.util.*
+import kotlin.collections.set
 import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.readText
-import kotlin.time.Duration.Companion.milliseconds
 
-class UtilCommands : Extension() {
-    override val name = "util"
+class TagCommand : Extension() {
+    override val name = "tag"
 
-    val tags = HashMap<String, EmbedData>()
+    private val tags = HashMap<String, EmbedData>()
 
     override suspend fun setup() {
-        ephemeralSlashCommand {
-            name = "ping"
-            description = "Show the ping of the bot."
-
-            action {
-                respond {
-                    val ping = this@UtilCommands.kord.gateway.averagePing
-                    embed {
-                        description = "Avg. Ping: $ping"
-                        if (ping != null) {
-                            color = when (ping > 100.milliseconds) {
-                                true -> Color(255, 0, 0)
-                                false -> Color(0, 255, 0)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         publicSlashCommand(::TagArguments) {
             name = "tag"
             description = "Show a tag"
@@ -79,20 +61,37 @@ class UtilCommands : Extension() {
                 }
             }
         }
+
+        ephemeralSlashCommand {
+            name = "reload"
+            description = "Reload the bot commands"
+            requirePermission(Permission.Administrator)
+            check {
+                hasPermission(Permission.Administrator)
+            }
+
+            action {
+                updateTags()
+                respond {
+                    content = "Tags synced."
+                }
+            }
+        }
     }
 
     inner class TagArguments : Arguments() {
-        val tag by stringChoice {
+        val tag by string {
             name = "tag"
             description = "The tag to show"
 
-            for (file in Files.list(Path(env("TAG_FOLDER")))) {
-                val fileName = file.nameWithoutExtension
-                val name = fileName.lowercase(Locale.ROOT).replace(" ", "_")
-                choices[fileName] = name
-                val e = JANKSON.fromJsonCarefully(file.readText(), EmbedData::class.java)
-                tags[name] = e
-            }
+            updateTags()
+        }
+    }
+
+    fun updateTags() {
+        for (file in Files.list(Path(env("TAG_FOLDER")))) {
+            val name = file.nameWithoutExtension.lowercase(Locale.ROOT).replace(" ", "_")
+            tags[name] = Util.JANKSON.fromJsonCarefully(file.readText(), EmbedData::class.java)
         }
     }
 

@@ -1,8 +1,7 @@
 package utilbot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import utilbot.extensions.LogUpload
-import utilbot.extensions.UtilCommands
+import utilbot.extensions.*
 import utilbot.util.Util
 
 suspend fun main() {
@@ -11,8 +10,10 @@ suspend fun main() {
             enabled = false
         }
         extensions {
-            add(::UtilCommands)
-            //add(::MappingCommands)
+            add(::VersionCommand)
+            add(::TagCommand)
+            add(::PingCommand)
+            add(::MappingCommand)
             add(::LogUpload)
         }
     }
